@@ -10,7 +10,7 @@ defmodule Exns do
     pool_args = [
         name: {:local, pool_name},
         worker_module: Exns.Worker,
-        size: 10] #[size: Application.get_env(:exns, :pool_size)]
+        size: Application.get_env(:exns, :pool_size)]
     worker_args = [
         address: Application.get_env(:exns, :service_address),
         timeout: Application.get_env(:exns, :service_timeout)]
