@@ -5,6 +5,8 @@ defmodule Exns.Mixfile do
     [app: :exns,
      version: "0.0.1-alpha",
      elixir: "~> 1.0",
+     build_embedded: Mix.env == :prod,
+     start_permanent: Mix.env == :prod,
      deps: deps,
      description: description,
      package: package]
@@ -14,7 +16,12 @@ defmodule Exns.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger, :enm, :msgpax]]
+    [applications: [:logger, :enm, :msgpax, :poolboy],
+     mod: {Exns, []},
+     env: [pool_size: 10,
+           pool_name: :exns_workers,
+           service_address: "ipc:///tmp/exns.sock",
+           service_timeout: 1000]]
   end
 
   defp description do
@@ -42,6 +49,7 @@ defmodule Exns.Mixfile do
   defp deps do
     [{:enm, git: "https://github.com/basho/enm"},
      {:msgpax, "~> 0.8"},
-     {:uuid, "~> 1.0.0"}]
+     {:uuid, "~> 1.0.0"},
+     {:poolboy, "~>1.5.1"}]
   end
 end

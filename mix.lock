@@ -1,3 +1,4 @@
 %{"enm": {:git, "https://github.com/basho/enm", "9be99ead124dde41ae970425b160c5569453a6a8", []},
   "msgpax": {:hex, :msgpax, "0.8.0"},
+  "poolboy": {:hex, :poolboy, "1.5.1"},
   "uuid": {:hex, :uuid, "1.0.1"}}
