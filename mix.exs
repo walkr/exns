@@ -24,7 +24,7 @@ defmodule Exns.Mixfile do
 
   defp package do
     [files: ["lib", "mix.exs", "README.md", "LICENSE"],
-     contributors: ["Tony Walkr"],
+     contributors: ["Tony Walker"],
      licenses: ["MIT"],
      links: %{"GitHub" => "https://github.com/walkr/exns"}]
   end
