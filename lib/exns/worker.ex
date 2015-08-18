@@ -1,4 +1,4 @@
-defmodule Exns.Client do
+defmodule Exns.Worker do
 
     use GenServer
 
@@ -10,33 +10,12 @@ defmodule Exns.Client do
         GenServer.start_link(__MODULE__, args, opts)
     end
 
-
-    def call(client, method, args \\ []) do
-        GenServer.call(client, [method: method, args: args])
-    end
-
-
     ### ===========================================================
     ### Server
     ### ===========================================================
-
-    defp build_payload(method, args) do
-        [method, args, UUID.uuid4(:hex)]
-    end
-
-    defp encode_payload(payload) do
-        {:ok, payload} = Msgpax.pack(payload)
-        payload
-    end
-
-    def decode_payload(encoded) do
-        {:ok, response} = Msgpax.unpack(encoded)
-        response
-    end
-
-    def init(address: address, timeout: timeout) do
-        {:ok, socket} = :enm.req(connect: address)
-        {:ok, {socket, timeout}}
+    def init(args) do
+        {:ok, socket} = :enm.req(connect: args[:address])
+        {:ok, {socket, args[:timeout]}}
     end
 
     def handle_call([method: method, args: args], _from, {socket, timeout} = state) do
@@ -53,6 +32,27 @@ defmodule Exns.Client do
             {:error, :etimedout} ->
                 {:reply, {:timeout, nil}, state}
         end
+    end
+
+    def terminate(_Reason, {socket, _} = state) do
+        :enm.close(socket)
+        :ok
+    end
+
+    ### Private
+
+    defp build_payload(method, args) do
+        [method, args, UUID.uuid4(:hex)]
+    end
+
+    defp encode_payload(payload) do
+        {:ok, payload} = Msgpax.pack(payload)
+        payload
+    end
+
+    defp decode_payload(encoded) do
+        {:ok, response} = Msgpax.unpack(encoded)
+        response
     end
 
 end
