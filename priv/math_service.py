@@ -10,7 +10,7 @@ def add(x, y):
     return x + y
 
 
-addr = 'ipc:///tmp/exns.sock'
+addr = 'ipc:///tmp/math-service.sock'
 s = Service(addr)
 s.register('ping', ping)
 s.register('add', add)
