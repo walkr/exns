@@ -33,9 +33,7 @@ defmodule Exns do
   Call a remote service
   """
   def call(service, method, args \\ []) do
-
     checkout_timeout = 3000
-
    :poolboy.transaction(
         service,
         fn(worker) ->
