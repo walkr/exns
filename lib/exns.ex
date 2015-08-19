@@ -6,35 +6,38 @@ defmodule Exns do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    pool_name = Application.get_env(:exns, :pool_name)
-    pool_args = [
+    nanoservices = Application.get_env(:exns, :nanoservices)
+
+    children = Enum.map(nanoservices, fn(ns) ->
+      pool_name = ns[:name]
+
+      pool_args = [
         name: {:local, pool_name},
         worker_module: Exns.Worker,
-        size: Application.get_env(:exns, :pool_size)]
-    worker_args = [
-        address: Application.get_env(:exns, :service_address),
-        timeout: Application.get_env(:exns, :service_timeout)]
-    children = [
-      # Define workers and child supervisors to be supervised
-      # worker(Exns.Worker, [arg1, arg2, arg3])
-      :poolboy.child_spec(pool_name, pool_args, worker_args)
-    ]
+        size: ns[:workers]]
 
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
+      worker_args = [
+        address: ns[:address],
+        timeout: ns[:timeout]]
+
+      :poolboy.child_spec(pool_name, pool_args, worker_args)
+
+    end)
+
     opts = [strategy: :one_for_one, name: Exns.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
+
   @doc """
   Call a remote service
   """
-  def call(method, args \\ []) do
-    pool_name = Application.get_env(:exns, :pool_name)
+  def call(service, method, args \\ []) do
+
     checkout_timeout = 3000
 
    :poolboy.transaction(
-        pool_name,
+        service,
         fn(worker) ->
             GenServer.call(worker, [method: method, args: args]) end,
         checkout_timeout

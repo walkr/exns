@@ -18,10 +18,18 @@ defmodule Exns.Mixfile do
   def application do
     [applications: [:logger, :enm, :msgpax, :poolboy],
      mod: {Exns, []},
-     env: [pool_size: 10,
-           pool_name: :exns_workers,
-           service_address: "ipc:///tmp/exns.sock",
-           service_timeout: 1000]]
+     env: [
+        nanoservices: [
+
+          [name: :math_service,
+           address: "ipc:///tmp/math-service.sock",
+           timeout: 1000,
+           workers: 10],
+
+          [name: :string_service,
+           address: "ipc:///tmp/string-service.sock",
+           timeout: 1000,
+           workers: 10]]]]
   end
 
   defp description do
