@@ -21,25 +21,32 @@ defmodule Exns do
         timeout: ns[:timeout]]
 
       :poolboy.child_spec(pool_name, pool_args, worker_args)
-
     end)
 
     opts = [strategy: :one_for_one, name: Exns.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
+  ### ***********************************************************
+  ### PUBLIC API
+  ### ***********************************************************
 
   @doc """
   Call a remote service
   """
   def call(service, method, args \\ []) do
-    checkout_timeout = 3000
-   :poolboy.transaction(
-        service,
-        fn(worker) ->
-            GenServer.call(worker, [method: method, args: args]) end,
-        checkout_timeout
+    checkout_timeout = 5000
+    :poolboy.transaction(
+      service,
+      fn(worker) ->
+          GenServer.call(worker, [method: method, args: args])
+      end,
+      checkout_timeout
     )
+  end
+
+
+  def subscribe(service, pattern) do
   end
 
 end

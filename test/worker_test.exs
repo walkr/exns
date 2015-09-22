@@ -6,12 +6,58 @@ defmodule Exns.WorkerTest do
         :ok = Application.start(:exns)
     end
 
-    test "service ping" do
-        {r1, e1} = Exns.call(:math_service, "ping")
-        assert {"pong", nil} == {r1, e1}
 
-        {r2, e2} = Exns.call(:string_service, "ping")
-        assert {"pong", nil} == {r2, e2}
+    # *********************
+    # PONG COLLECTOR
+    # *********************
+
+    def collector(parent, total) do
+        collector(parent, total, 0)
+    end
+
+    def collector(parent, total, total) do
+        send parent, {:done, total}
+    end
+
+    def collector(parent, total, acc) do
+        receive do
+            :pong -> collector(parent, total, acc + 1)
+        end
+    end
+
+
+    # *********************
+    # TESTS
+    # *********************
+
+    test "concurrent pings to service" do
+
+        max = 5000
+        parent_pid = self()
+        collector_pid = spawn fn-> collector(parent_pid, max) end
+
+        started = :erlang.timestamp()
+
+        # Launch `max` pings then collect pongs
+        for n <- 1..max, do: spawn(fn ->
+            response = Exns.call(:math_service, "ping")
+            {"pong", nil} = response
+            assert {"pong", nil} == response
+            send collector_pid, :pong
+        end)
+
+        # Wait until all pongs are collected
+        receive do
+            {:done, ^max} -> :ok
+        end
+
+        ended = :erlang.timestamp()
+        duration = :timer.now_diff(ended, started) / 1_000_000
+        throughput = max / duration
+
+        IO.puts "Service performance: #{throughput} reqs/sec"
+        assert true
+
     end
 
     test "service method with args" do
