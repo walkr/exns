@@ -6,7 +6,7 @@ defmodule Exns do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    nanoservices = Application.get_env(:exns, :nanoservices)
+    nanoservices = Application.get_env(:exns, :nanoservices, [])
 
     children = Enum.map(nanoservices, fn(ns) ->
       pool_name = ns[:name]

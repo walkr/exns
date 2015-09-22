@@ -16,20 +16,8 @@ defmodule Exns.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger, :enm, :msgpax, :poolboy],
-     mod: {Exns, []},
-     env: [
-        nanoservices: [
-
-          [name: :math_service,
-           address: "ipc:///tmp/math-service.sock",
-           timeout: 1000,
-           workers: 10],
-
-          [name: :string_service,
-           address: "ipc:///tmp/string-service.sock",
-           timeout: 1000,
-           workers: 10]]]]
+    [mod: {Exns, []},
+     applications: [:logger, :enm, :msgpax, :poolboy]]
   end
 
   defp description do
