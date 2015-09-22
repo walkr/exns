@@ -13,7 +13,7 @@ defmodule Exns do
 
       pool_args = [
         name: {:local, pool_name},
-        worker_module: Exns.Worker,
+        worker_module: Exns.Request.Worker,
         size: ns[:workers]]
 
       worker_args = [
@@ -44,7 +44,6 @@ defmodule Exns do
       checkout_timeout
     )
   end
-
 
   def subscribe(service, pattern) do
   end

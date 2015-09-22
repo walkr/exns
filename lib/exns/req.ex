@@ -1,22 +1,25 @@
-defmodule Exns.Worker do
+defmodule Exns.Request.Worker do
 
     @moduledoc """
-    A Workers is implemented as a GenServer, which is to be spawned by poolboy.
+    A Request Worker is implemented as a GenServer, which is to be spawned by poolboy.
+    It's basic function is to open a socket to the remove service (on init)
+    then forward
+
     """
     use GenServer
     require Logger
 
     ### ***********************************************************
-    ### CLIENT
+    ### API
     ### ***********************************************************
 
     def start_link(args, opts \\ []) do
         GenServer.start_link(__MODULE__, args, opts)
     end
 
-    ### ***********************************************************
-    ### SERVER
-    ### ***********************************************************
+    ### **********
+    ### CALLBACKS
+    ### **********
 
     def init(config) do
         {:ok, socket} = new_socket(config)
@@ -29,14 +32,26 @@ defmodule Exns.Worker do
         send_recv(state, encode_payload(payload), ref, 10)
     end
 
+    def handle_cast(_msg, state) do
+        {:noreply, state}
+    end
+
+    def handle_info(_info, state) do
+        {:noreply, state}
+    end
+
     def terminate(_Reason, {socket, _timeout} = state) do
         Logger.error "Worker terminated. Closing socket ..."
         :enm.close(socket)
         :ok
     end
 
+    def code_change(_old_vsn, state, _extra) do
+        {:ok, state}
+    end
+
     ### ***********************************************************
-    ### PRIVATE
+    ### INTERNAL
     ### ***********************************************************
 
     def new_socket(config) do

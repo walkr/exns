@@ -1,4 +1,4 @@
-defmodule Exns.WorkerTest do
+defmodule Exns.RequestWorkerTest do
     use ExUnit.Case, async: true
 
     setup do
@@ -39,7 +39,7 @@ defmodule Exns.WorkerTest do
         started = :erlang.timestamp()
 
         # Launch `max` pings then collect pongs
-        for n <- 1..max, do: spawn(fn ->
+        for _ <- 1..max, do: spawn(fn ->
             response = Exns.call(:math_service, "ping")
             {"pong", nil} = response
             assert {"pong", nil} == response
@@ -56,7 +56,6 @@ defmodule Exns.WorkerTest do
         throughput = max / duration
 
         IO.puts "Service performance: #{throughput} reqs/sec"
-        assert true
 
     end
 
