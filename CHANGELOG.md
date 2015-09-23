@@ -1,6 +1,11 @@
 Changelog
 =========
 
+### 0.2.0-beta
+
+* Calls to nanoservices now return tuples (idiomatic erlang/elixir): `{:ok, result}` or `{:error, error}`
+* Add optimistic `call!` function
+
 ### 0.1.0-beta
 
 * Refactored request worker
