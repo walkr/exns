@@ -3,6 +3,8 @@ defmodule Exns.RequestWorkerTest do
 
 
     setup do
+        Logger.configure(level: :error)
+
         Application.put_env(:exns, :nanoservices,
             [[name: :math_service,
               address: "ipc:///tmp/math-service.sock",
@@ -17,6 +19,7 @@ defmodule Exns.RequestWorkerTest do
 
         Application.stop(:exns)
         :ok = Application.start(:exns)
+
     end
 
 
@@ -53,9 +56,7 @@ defmodule Exns.RequestWorkerTest do
 
         # Launch `max` pings then collect pongs
         for _ <- 1..max, do: spawn(fn ->
-            response = Exns.call(:math_service, "ping")
-            {"pong", nil} = response
-            assert {"pong", nil} == response
+            assert {:ok, "pong"} == Exns.call(:math_service, "ping")
             send collector_pid, :pong
         end)
 
@@ -73,16 +74,16 @@ defmodule Exns.RequestWorkerTest do
     end
 
     test "service method with args" do
-        {result, error} = Exns.call(:math_service, "add", [1, 2])
-        assert {3, nil} == {result, error}
+        assert {:ok, 3} == Exns.call(:math_service, "add", [1, 2])
+        assert {:ok, "HELLO"} == Exns.call(:string_service, "uppercase", ["hello"])
+    end
 
-        {result, error} = Exns.call(:string_service, "uppercase", ["hello"])
-        assert {"HELLO", nil} == {result, error}
+    test "call!" do
+        assert 3 == Exns.call!(:math_service, "add", [1,2])
     end
 
     test "service unknown method" do
-        {result, error} = Exns.call(:math_service, "some-inexisting-method")
-        assert result == nil
+        {:error, error} = Exns.call(:math_service, "some-inexisting-method")
         assert error != nil
     end
 

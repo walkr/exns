@@ -1,4 +1,4 @@
-%{"enm": {:git, "https://github.com/basho/enm", "9be99ead124dde41ae970425b160c5569453a6a8", []},
-  "msgpax": {:hex, :msgpax, "0.8.0"},
+%{"enm": {:git, "https://github.com/walkr/enm", "100be79b8e83f5c12ebb19bdc06ba6c63b0c78db", []},
+  "msgpax": {:hex, :msgpax, "0.8.1"},
   "poolboy": {:hex, :poolboy, "1.5.1"},
   "uuid": {:hex, :uuid, "1.0.1"}}

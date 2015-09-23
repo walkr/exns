@@ -35,17 +35,34 @@ defmodule Exns do
   Call a remote service
   """
   def call(service, method, args \\ []) do
-    checkout_timeout = 5000
-    :poolboy.transaction(
+    make_call(service, method, args)
+  end
+
+
+  def call!(service, method, args \\ []) do
+    {:ok, result} = make_call(service, method, args)
+    result
+  end
+
+  defp make_call(service, method, args \\ [], checkout_timeout \\ 5000) do
+
+    response = :poolboy.transaction(
       service,
       fn(worker) ->
           GenServer.call(worker, [method: method, args: args])
       end,
       checkout_timeout
     )
-  end
 
-  def subscribe(service, pattern) do
+    # A nanoservice will return {result, error}, but in Erlang/Elixir
+    # we will convert it to more idiomatic {:ok, result}, {:error, error}
+
+    case response do
+      {nil, nil} -> {:ok, nil}
+      {result, nil} -> {:ok, result}
+      {_, error} -> {:error, error}
+    end
+
   end
 
 end
