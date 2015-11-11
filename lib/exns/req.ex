@@ -8,6 +8,11 @@ defmodule Exns.Request.Worker do
     """
     use GenServer
     require Logger
+    alias Exns.Encoder
+
+    defmodule State do
+        defstruct socket: nil, address: nil, timeout: 10, encoder: nil
+    end
 
     ### ***********************************************************
     ### API
@@ -21,15 +26,20 @@ defmodule Exns.Request.Worker do
     ### CALLBACKS
     ### **********
 
-    def init(config) do
-        {:ok, socket} = new_socket(config)
-        {:ok, {socket, config}}
+    def init(opts) do
+        state = %State{
+            address: opts.address,
+            timeout: opts.timeout,
+            encoder: opts.encoder}
+        {:ok, socket} = new_socket(state.address)
+        state = %{state | socket: socket}
+        {:ok, state}
     end
 
-    def handle_call([method: method, args: args], _from, {socket, config} = state) do
+    def handle_call([method: method, args: args], _from, %{encoder: encoder} = state) do
         payload = build_payload(method, args)
         [_method, _args, ref] = payload
-        send_recv(state, encode_payload(payload), ref, 10)
+        send_recv(state, Encoder.encode(payload, encoder), ref, 10)
     end
 
     def handle_cast(_msg, state) do
@@ -40,7 +50,7 @@ defmodule Exns.Request.Worker do
         {:noreply, state}
     end
 
-    def terminate(_Reason, {socket, _timeout} = state) do
+    def terminate(_Reason, %{socket: socket} = state) do
         Logger.error "Worker terminated. Closing socket ..."
         :enm.close(socket)
         :ok
@@ -54,47 +64,38 @@ defmodule Exns.Request.Worker do
     ### INTERNAL
     ### ***********************************************************
 
-    def new_socket(config) do
-        {:ok, socket} = :enm.req(connect: config[:address])
+    def new_socket(address) do
+        {:ok, socket} = :enm.req(connect: address)
     end
 
-    def new_socket(config, old_socket) do
+    def new_socket(address, old_socket) do
         :enm.close(old_socket)
-        new_socket(config)
+        new_socket(address)
     end
 
     defp build_payload(method, args) do
         [method, args, UUID.uuid4(:hex)]
     end
 
-    defp encode_payload(payload) do
-        {:ok, payload} = Msgpax.pack(payload)
-        payload
-    end
-
-    defp decode_payload(encoded) do
-        {:ok, response} = Msgpax.unpack(encoded)
-        response
-    end
-
     def send_recv(state, _encoded, _ref, 0) do
         {:reply, {:error, :no_more_retries}, state}
     end
 
-    def send_recv({socket, config} = state, encoded, ref, retries) when retries > 0 do
-        :ok = :enm.send(socket, encoded)
-        case :enm.recv(socket, config[:timeout]) do
+    def send_recv(state, encoded, ref, retries) when retries > 0 do
+        :ok = :enm.send(state.socket, encoded)
+        case :enm.recv(state.socket, state.timeout) do
 
             {:ok, response} ->
-                %{"result" => r, "error" => e, "ref" => ref} = decode_payload(response)
+                %{"result" => r, "error" => e, "ref" => ref} = Encoder.decode(response, state.encoder)
                 {:reply, {r, e}, state}
 
             {:error, :etimedout} ->
                 {:reply, :timeout, state}
 
             {:error, :efsm} ->
-                {:ok, new_socket} = new_socket(config, socket)
-                new_state = {new_socket, config}
+                # Create a new socket
+                {:ok, new_socket} = new_socket(state.address, state.socket)
+                new_state = %{state | socket: new_socket}
                 send_recv(new_state, encoded, ref, retries-1)
         end
 

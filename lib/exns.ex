@@ -16,9 +16,11 @@ defmodule Exns do
         worker_module: Exns.Request.Worker,
         size: ns[:workers]]
 
-      worker_args = [
+      worker_args = %{
         address: ns[:address],
-        timeout: ns[:timeout]]
+        timeout: ns[:timeout],
+        encoder: ns[:encoder] || "json"
+      }
 
       :poolboy.child_spec(pool_name, pool_args, worker_args)
     end)
