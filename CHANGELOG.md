@@ -1,6 +1,17 @@
 Changelog
 =========
 
+### 0.3.0-beta
+
+* Accept different encoders (msgpack/json) for request workers
+
+	```elixir
+	config :exns, nanoservices: [
+	  [name: :math_service,
+	   ...
+	   encoder: "json"]]
+	```
+
 ### 0.2.0-beta
 
 * Calls to nanoservices now return tuples (idiomatic erlang/elixir): `{:ok, result}` or `{:error, error}`
