@@ -44,7 +44,8 @@ defmodule Exns.Mixfile do
 
   defp deps do
     [{:enm, git: "https://github.com/walkr/enm"},
-     {:msgpax, "~> 0.8"},
+     {:poison, "~> 1.5"},
+     {:msgpax, "~> 0.8.1"},
      {:uuid, "~> 1.0.0"},
      {:poolboy, "~>1.5.1"}]
   end
