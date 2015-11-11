@@ -20,7 +20,8 @@ config :exns, nanoservices: [
   [name: :string_service,
    address: "ipc:///tmp/string-service.sock",
    timeout: 5000,
-   workers: 10]]
+   workers: 10,
+   encoder: "msgpack"]]
 ```
 
 
