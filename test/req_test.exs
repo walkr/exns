@@ -2,19 +2,42 @@ defmodule Exns.RequestWorkerTest do
     use ExUnit.Case, async: true
 
 
+    setup_all do
+
+        # Start math service
+        pid1 = spawn fn ->
+            path = Path.join(System.cwd, "priv/math_service.py")
+            System.cmd "python", [path]
+        end
+
+        # Start string service
+        pid2 = spawn fn ->
+            path = Path.join(System.cwd, "priv/string_service.py")
+            System.cmd "python", [path]
+        end
+
+        # Kill processes
+        on_exit fn ->
+            :erlang.exit pid1, :kill
+            :erlang.exit pid2, :kill
+        end
+    end
+
     setup do
         Logger.configure(level: :error)
 
         Application.put_env(:exns, :nanoservices,
             [[name: :math_service,
-              address: "ipc:///tmp/math-service.sock",
+              address: "ipc:///tmp/math-test-service.sock",
               timeout: 1000,
-              workers: 10],
+              workers: 10,
+              encoder: "msgpack"],
 
             [name: :string_service,
-             address: "ipc:///tmp/string-service.sock",
+             address: "ipc:///tmp/string-test-service.sock",
              timeout: 1000,
-             workers: 10]]
+             workers: 10,
+             encoder: "json"]]
         )
 
         Application.stop(:exns)
