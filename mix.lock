@@ -1,5 +1,5 @@
-%{"enm": {:git, "https://github.com/walkr/enm", "100be79b8e83f5c12ebb19bdc06ba6c63b0c78db", []},
+%{"enm": {:git, "https://github.com/walkr/enm", "1b100bf8a4f871baf2be017bca697db445ec4f38", []},
   "msgpax": {:hex, :msgpax, "0.8.1"},
   "poison": {:hex, :poison, "1.5.0"},
   "poolboy": {:hex, :poolboy, "1.5.1"},
-  "uuid": {:hex, :uuid, "1.0.1"}}
+  "uuid": {:hex, :uuid, "1.1.2"}}

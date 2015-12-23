@@ -3,7 +3,7 @@ defmodule Exns.Mixfile do
 
   def project do
     [app: :exns,
-     version: "0.3.0-beta",
+     version: "0.3.1-beta",
      elixir: "~> 1.0",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -46,7 +46,7 @@ defmodule Exns.Mixfile do
     [{:enm, git: "https://github.com/walkr/enm"},
      {:poison, "~> 1.5"},
      {:msgpax, "~> 0.8.1"},
-     {:uuid, "~> 1.0.0"},
+     {:uuid, "~> 1.1.2"},
      {:poolboy, "~>1.5.1"}]
   end
 end
