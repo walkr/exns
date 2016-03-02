@@ -43,7 +43,7 @@ defmodule Exns.Mixfile do
   # Type `mix help deps` for more examples and options
 
   defp deps do
-    [{:enm, git: "https://github.com/walkr/enm"},
+    [{:enm, git: "https://github.com/basho/enm"},
      {:poison, "~> 1.5"},
      {:msgpax, "~> 0.8.1"},
      {:uuid, "~> 1.1.2"},
