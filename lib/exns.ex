@@ -50,7 +50,7 @@ defmodule Exns do
       end
 
   OR
-      result = Exns.call("math_service", "add", [1,2])
+      result = Exns.call!("math_service", "add", [1,2])
 
   """
 
