@@ -1,9 +1,12 @@
 defmodule Exns.Request.Worker do
 
     @moduledoc """
-    A Request Worker is implemented as a GenServer, which is to be spawned by poolboy.
-    It's basic function is to open a socket to the remove service (on init)
-    then forward
+    An `Exns.Request.Worker` is implemented as a GenServer,
+    which is to be spawned by poolboy.
+
+    Its basic function is to open a socket to the remove service (on init)
+    then make requests via this socket. The socket is not closed after each
+    request, but rather on the GenServer's termination.
 
     """
     use GenServer

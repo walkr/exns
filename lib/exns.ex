@@ -1,5 +1,61 @@
 defmodule Exns do
+  @moduledoc ~S"""
+  Communicate with your [python nanoservices](https://github.com/walkr/nanoservice)
+  from Elixir.
+
+  ## Installation
+
+  Add `exns` as a dependency to your project's `mix.exs`
+
+      def deps do
+        [{:exns, "~> 0.3.3"}]
+      end
+
+  ## Configuration
+
+  In your application's `config.exs` describe your nanoservices like so:
+
+      config :exns, nanoservices: [
+
+      [name: :math_service,
+       address: "ipc:///tmp/math-service.sock",
+       timeout: 5000,
+       workers: 10],
+
+      [name: :string_service,
+       address: "ipc:///tmp/string-service.sock",
+       timeout: 5000,
+       workers: 10,
+       encoder: "msgpack"]]
+
+  ## Communication with a nanoservice
+
+
+  Say you have the following nanoservice in Python:
+
+      from nanoservice import Responder
+
+      def add(x, y):
+          return x+y
+
+      s = Responder('ipc:///tmp/math_service.sock')
+      s.register('add', add)
+      s.start()
+
+  To call your nanoservice from Elixir you'd use:
+
+      case Exns.call("math_service", "add", [1,2]) do
+          {:ok, result} -> IO.puts "Result is: #{result}"
+          {:error, msg} -> IO.puts "Error #{msg}"
+      end
+
+  OR
+      result = Exns.call("math_service", "add", [1,2])
+
+  """
+
   use Application
+  use Exns.Api
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -27,44 +83,6 @@ defmodule Exns do
 
     opts = [strategy: :one_for_one, name: Exns.Supervisor]
     Supervisor.start_link(children, opts)
-  end
-
-  ### ***********************************************************
-  ### PUBLIC API
-  ### ***********************************************************
-
-  @doc """
-  Call a remote service
-  """
-  def call(service, method, args \\ []) do
-    make_call(service, method, args)
-  end
-
-
-  def call!(service, method, args \\ []) do
-    {:ok, result} = make_call(service, method, args)
-    result
-  end
-
-  defp make_call(service, method, args \\ [], checkout_timeout \\ 5000) do
-
-    response = :poolboy.transaction(
-      service,
-      fn(worker) ->
-          GenServer.call(worker, [method: method, args: args])
-      end,
-      checkout_timeout
-    )
-
-    # A nanoservice will return {result, error}, but in Erlang/Elixir
-    # we will convert it to more idiomatic {:ok, result}, {:error, error}
-
-    case response do
-      {nil, nil} -> {:ok, nil}
-      {result, nil} -> {:ok, result}
-      {_, error} -> {:error, error}
-    end
-
   end
 
 end

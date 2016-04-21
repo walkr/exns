@@ -1,5 +1,7 @@
-%{"enm": {:git, "https://github.com/basho/enm", "1b100bf8a4f871baf2be017bca697db445ec4f38", []},
-  "msgpax": {:hex, :msgpax, "0.8.1"},
-  "poison": {:hex, :poison, "1.5.0"},
+%{"earmark": {:hex, :earmark, "0.2.1"},
+  "enm": {:git, "https://github.com/basho/enm", "62f0651d95ddcc009cba3fd5c20b217fa9af593e", []},
+  "ex_doc": {:hex, :ex_doc, "0.11.4"},
+  "msgpax": {:hex, :msgpax, "0.8.2"},
+  "poison": {:hex, :poison, "1.5.2"},
   "poolboy": {:hex, :poolboy, "1.5.1"},
-  "uuid": {:hex, :uuid, "1.1.2"}}
+  "uuid": {:hex, :uuid, "1.1.3"}}

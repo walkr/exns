@@ -3,13 +3,14 @@ defmodule Exns.Mixfile do
 
   def project do
     [app: :exns,
-     version: "0.3.2-beta",
+     version: "0.3.3-beta",
      elixir: "~> 1.0",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps,
      description: description,
-     package: package]
+     package: package,
+     docs: [extras: ["README.md"]]]
   end
 
   # Configuration for the OTP application
@@ -47,6 +48,8 @@ defmodule Exns.Mixfile do
      {:poison, "~> 1.5"},
      {:msgpax, "~> 0.8.1"},
      {:uuid, "~> 1.1.2"},
-     {:poolboy, "~>1.5.1"}]
+     {:poolboy, "~>1.5.1"},
+     {:earmark, "~> 0.1", only: :dev},
+     {:ex_doc, "~> 0.11", only: :dev}]
   end
 end
