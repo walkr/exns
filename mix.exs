@@ -10,7 +10,8 @@ defmodule Exns.Mixfile do
      deps: deps,
      description: description,
      package: package,
-     docs: [extras: ["README.md"]]]
+     docs: [main: "Exns",
+            source_url: "https://github.com/walkr/exns"]]
   end
 
   # Configuration for the OTP application
