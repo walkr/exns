@@ -45,6 +45,18 @@ IO.puts "1 + 2 = #{result}"
 Run tests
 ```
 $ mix test
+
+Stats for simple pings to math service:
+---
+Concurrency:                    2000 clients
+Throughput                      4361 req/sec
+Avg. Request Time:              0.23 ms
+....
+
+Finished in 0.6 seconds (0.1s on load, 0.4s on tests)
+6 tests, 0 failures
+
+Randomized with seed 864352
 ```
 
 ... and with coverage
