@@ -3,7 +3,7 @@ defmodule Exns.Mixfile do
 
   def project do
     [app: :exns,
-     version: "0.3.3-beta",
+     version: "0.3.4-beta",
      elixir: "~> 1.0",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
