@@ -89,7 +89,7 @@ defmodule Exns.Request.Worker do
         case :enm.recv(state.socket, state.timeout) do
 
             {:ok, response} ->
-                %{"result" => r, "error" => e, "ref" => ref} = Encoder.decode(response, state.encoder)
+                %{"result" => r, "error" => e, "ref" => ^ref} = Encoder.decode(response, state.encoder)
                 {:reply, {r, e}, state}
 
             {:error, :etimedout} ->

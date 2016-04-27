@@ -10,8 +10,8 @@ defmodule Exns.Mixfile do
      deps: deps,
      description: description,
      package: package,
-     docs: [main: "Exns",
-            source_url: "https://github.com/walkr/exns"]]
+     docs: [main: "Exns", source_url: "https://github.com/walkr/exns"],
+     test_coverage: [tool: Coverex.Task]]
   end
 
   # Configuration for the OTP application
@@ -51,6 +51,8 @@ defmodule Exns.Mixfile do
      {:uuid, "~> 1.1.2"},
      {:poolboy, "~>1.5.1"},
      {:earmark, "~> 0.1", only: :dev},
-     {:ex_doc, "~> 0.11", only: :dev}]
+     {:ex_doc, "~> 0.11", only: :dev},
+     {:coverex, "~> 1.4.8", only: :test}]
   end
+
 end

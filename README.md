@@ -40,4 +40,18 @@ IO.puts "1 + 2 = #{result}"
 ```
 
 
-#### MIT Licensed
+### Development
+
+Run tests
+```
+$ mix test
+```
+
+... and with coverage
+
+```
+$ mix test --cover
+```
+
+
+### MIT License

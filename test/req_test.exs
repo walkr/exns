@@ -69,9 +69,9 @@ defmodule Exns.RequestWorkerTest do
     # TESTS
     # *********************
 
-    test "concurrent pings to service" do
+    test "concurrent pings to match service and msgpack encoding" do
 
-        max = 5000
+        max = 2000
         parent_pid = self()
         collector_pid = spawn fn-> collector(parent_pid, max) end
 
@@ -88,12 +88,8 @@ defmodule Exns.RequestWorkerTest do
             {:done, ^max} -> :ok
         end
 
-        ended = :erlang.timestamp()
-        duration = :timer.now_diff(ended, started) / 1_000_000
-        throughput = max / duration
-
-        IO.puts "Service performance: #{throughput} reqs/sec"
-
+        IO.puts "\nStats for simple pings to math service:\n---"
+        show_stats(started, max)
     end
 
     test "service method with args" do
@@ -108,6 +104,20 @@ defmodule Exns.RequestWorkerTest do
     test "service unknown method" do
         {:error, error} = Exns.call(:math_service, "some-inexisting-method")
         assert error != nil
+    end
+
+    # Show test statistics
+    def show_stats(started, max) do
+
+        ended = :erlang.timestamp()
+        duration = :timer.now_diff(ended, started) / 1_000_000
+        throughput = max / duration
+        avg_req_time = Float.round(duration / max * 1000, 2)
+
+        IO.puts String.ljust("Concurrency: ", 32) <> "#{max} clients"
+        IO.puts String.ljust("Throughput", 32) <> "#{round throughput} req/sec"
+        IO.puts String.ljust("Avg. Request Time: ", 32) <> "#{avg_req_time} ms"
+
     end
 
 end

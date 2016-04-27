@@ -1,5 +1,5 @@
 # A simple service for testing purposes
-from nanoservice import Service
+from nanoservice import Responder
 from nanoservice.encoder import JSONEncoder
 
 
@@ -12,7 +12,7 @@ def uppercase(string):
 
 
 addr = 'ipc:///tmp/string-test-service.sock'
-s = Service(addr, encoder=JSONEncoder())
+s = Responder(addr, encoder=JSONEncoder())
 s.register('ping', ping)
 s.register('uppercase', uppercase)
 

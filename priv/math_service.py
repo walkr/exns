@@ -1,5 +1,5 @@
 # A simple service for testing purposes
-from nanoservice import Service
+from nanoservice import Responder
 
 
 def ping():
@@ -11,7 +11,7 @@ def add(x, y):
 
 
 addr = 'ipc:///tmp/math-test-service.sock'
-s = Service(addr)
+s = Responder(addr)
 s.register('ping', ping)
 s.register('add', add)
 
