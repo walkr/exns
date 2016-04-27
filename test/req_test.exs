@@ -33,6 +33,12 @@ defmodule Exns.RequestWorkerTest do
               workers: 10,
               encoder: "msgpack"],
 
+            [name: :unreal_service,
+              address: "ipc:///tmp/no-service-here.sock",
+              timeout: 1,
+              workers: 10,
+              encoder: "msgpack"],
+
             [name: :string_service,
              address: "ipc:///tmp/string-test-service.sock",
              timeout: 1000,
@@ -104,6 +110,10 @@ defmodule Exns.RequestWorkerTest do
     test "service unknown method" do
         {:error, error} = Exns.call(:math_service, "some-inexisting-method")
         assert error != nil
+    end
+
+    test "service timeout" do
+        assert {:error, :timeout} == Exns.call(:unreal_service, "add", [1,2])
     end
 
     # Show test statistics

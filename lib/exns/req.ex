@@ -93,7 +93,7 @@ defmodule Exns.Request.Worker do
                 {:reply, {r, e}, state}
 
             {:error, :etimedout} ->
-                {:reply, :timeout, state}
+                {:reply, {:error, :timeout}, state}
 
             {:error, :efsm} ->
                 # Create a new socket

@@ -1,6 +1,11 @@
 Changelog
 =========
 
+### 0.3.5-beta
+
+* Timeouts are now handled properly
+
+
 ### 0.3.4-beta
 
 * Correctly match on request reference id

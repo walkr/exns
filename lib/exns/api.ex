@@ -37,8 +37,13 @@ defmodule Exns.Api do
         # we will convert it to more idiomatic {:ok, result}, {:error, error}
 
         case response do
-          {nil, nil} -> {:ok, nil}
+          # client has timed out
+          {:error, :timeout} -> {:error, :timeout}
+
+          # nanoservice has no errors
           {result, nil} -> {:ok, result}
+
+          # nanoservice returned an error
           {_, error} -> {:error, error}
         end
     end
