@@ -53,7 +53,7 @@ defmodule Exns.Request.Worker do
         {:noreply, state}
     end
 
-    def terminate(_Reason, %{socket: socket} = state) do
+    def terminate(_Reason, %{socket: socket} = _state) do
         Logger.error "Worker terminated. Closing socket ..."
         :enm.close(socket)
         :ok
@@ -69,6 +69,7 @@ defmodule Exns.Request.Worker do
 
     def new_socket(address) do
         {:ok, socket} = :enm.req(connect: address)
+        {:ok, socket}
     end
 
     def new_socket(address, old_socket) do
