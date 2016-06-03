@@ -29,11 +29,11 @@ defmodule Exns.Request.Worker do
     ### CALLBACKS
     ### **********
 
-    def init(opts) do
+    def init(args) do
         state = %State{
-            address: opts.address,
-            timeout: opts.timeout,
-            encoder: opts.encoder}
+            address: args.address,
+            timeout: args.timeout,
+            encoder: args.encoder}
         {:ok, socket} = new_socket(state.address)
         state = %{state | socket: socket}
         {:ok, state}
