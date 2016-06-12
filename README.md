@@ -1,15 +1,37 @@
 exns (beta)
 ===========
 
-Interact with Python [nanoservices](https://github.com/walkr/nanoservice) from Elixir.
+This library allows you to interact with Python [nanoservices](https://github.com/walkr/nanoservice) from Elixir Language.
 
 
-### Usage
+### Installation
 
+* Add `exns` as dependency
 
-* Update your app's `config.exs` with your nanoservices
 
 ```elixir
+ defp deps do
+    [{:exns, "~> 0.3.5-beta"}]
+  end
+```
+
+* Ensure `exns` app is started
+
+```elixir
+  def application do
+    [mod: {<<YOUR-APP-MODULE>>, []},
+     applications: [..., :exns, ...]]
+  end
+```
+
+### Configuration
+
+
+* Define your nanoservices in your app's `config.exs`
+
+```elixir
+### Nanoservices
+
 config :exns, nanoservices: [
 
   [name: :math_service,
@@ -21,22 +43,31 @@ config :exns, nanoservices: [
    address: "ipc:///tmp/string-service.sock",
    timeout: 5000,
    workers: 10,
-   encoder: "msgpack"]]
+   encoder: "msgpack"]]  # default encoder is "json"
 ```
 
 
-* Make calls to a nanoservice
+### Usage
+
+First, ensure your defined Python **nanoservices** are running.
+
+To learn more about writing a nanoservice in Python please see the [nanoservice](https://github.com/walkr/nanoservice) library
+
+* Making a request from Elixir
 
 ```elixir
-# Successful request
-{:ok, result} = Exns.call(:math_service, "add", [1, 2])
-IO.puts "1 + 2 = #{result}"
+response = Exns.call(:math_service, "add", [1, 2])
 
-# Optimistic request
+case response do
+	{:ok, result} -> IO.puts "1 + 2 = #{result}"
+	{:error, error} -> IO.puts "Nano service erred #{inspect error}"
+end
+```
+
+* Making an optimistic request
+
+```elixir
 3 == Exns.call!(:math_service, "add", [1, 2])
-
-# A request which erred on the python side
-{:error, error} = Exns.call(:math_service, "your_non_existing_method")
 ```
 
 
