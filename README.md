@@ -1,8 +1,18 @@
 exns (beta)
 ===========
 
-This library allows you to interact with Python [nanoservices](https://github.com/walkr/nanoservice) from Elixir Language.
+This library allows you to interact with **Python** code from **Elixir** 
 
+**Typical flow**
+
+* Expose your desired Python code as a [nanoservice](https://github.com/walkr/nanoservice)
+* Call your code from Elixir language using the exns library
+
+**Features**
+
+* Fast – uses [nanomsg](https://github.com/nanomsg/nanomsg) socket library, and MessagePack (or JSON) for serialization
+* Flexible – your nanoservice can be running on the local machine or remotely on a different computer
+* Simple – your Python code is just one call away
 
 ### Installation
 
@@ -56,6 +66,8 @@ To learn more about writing a nanoservice in Python please see the [nanoservice]
 * Making a request from Elixir
 
 ```elixir
+# The call format is (serviceName, methodName, arguments)
+
 response = Exns.call(:math_service, "add", [1, 2])
 
 case response do
