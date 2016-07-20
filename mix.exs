@@ -46,7 +46,7 @@ defmodule Exns.Mixfile do
 
   defp deps do
     [{:enm, git: "https://github.com/basho/enm"},
-     {:poison, "~> 1.5"},
+     {:poison, "~> 2.2.0"},
      {:msgpax, "~> 0.8.1"},
      {:uuid, "~> 1.1.2"},
      {:poolboy, "~>1.5.1"},
