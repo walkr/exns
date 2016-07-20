@@ -1,6 +1,11 @@
 Changelog
 =========
 
+### 0.3.6-beta
+
+* Updated dependencies
+
+
 ### 0.3.5-beta
 
 * Timeouts are now handled properly
